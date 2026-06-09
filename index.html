@@ -188,13 +188,14 @@
       display: none;
     }
     .option-label.checked .radio-dot::after { display: block; }
-    .option-text { font-size: 16px; line-height: 1.9; }
+    .option-text { font-size: 16px; line-height: 1.9; flex: 1; min-width: 0; }
     .option-text .opt-title { font-weight: 700; font-size: 18px; color: var(--green-dark); }
     .option-text .opt-price { color: var(--gold); font-weight: 700; font-size: 19px; }
     .option-text .opt-detail { color: var(--text-muted); margin-top: 3px; font-size: 15px; }
 
     .other-input {
       width: 100%;
+      display: block;
       margin-top: 10px;
       padding: 10px 14px;
       border: 2px solid var(--border);
@@ -253,6 +254,24 @@
     /* ── Error hints ── */
     .err { color: #c0392b; font-size: 15px; margin-top: 8px; display: none; }
 
+
+    /* ── Deadline lock ── */
+    #deadline-banner {
+      display: none;
+      background: #c0392b;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    #deadline-banner.show { display: block; }
+    .locked-overlay {
+      pointer-events: none;
+      opacity: 0.4;
+      user-select: none;
+    }
     /* ── Footer ── */
     .site-footer {
       text-align: center;
@@ -270,6 +289,7 @@
   <div class="deadline">⏰ 請於 6月12日 中午12時前填妥</div>
 </header>
 
+<div id="deadline-banner">⛔ 問卷已截止，無法填寫。感謝您的參與！</div>
 <main class="container">
 
   <!-- 公告說明 -->
@@ -379,6 +399,19 @@ let selectedClass   = null;
 let selectedStudent = null;
 let selectedPlan    = null;
 
+
+// ── 截止時間檢查（從 Google Sheets 讀取） ──
+// Apps Script doGet 會回傳 deadline 欄位（ISO 字串，例如 "2025-06-12T12:00:00+08:00"）
+async function checkDeadline(deadline) {
+  if (!deadline) return; // 未設定則不鎖定
+  const now      = new Date();
+  const deadlineDate = new Date(deadline);
+  if (now > deadlineDate) {
+    document.getElementById('deadline-banner').classList.add('show');
+    document.querySelector('.container').classList.add('locked-overlay');
+    document.getElementById('submitBtn') && (document.getElementById('submitBtn').disabled = true);
+  }
+}
 // ── 載入學生名單 ──
 async function loadStudents() {
   const classGrid = document.getElementById('classGrid');
@@ -389,6 +422,9 @@ async function loadStudents() {
     const json = await res.json();
 
     if (json.status !== 'ok') throw new Error(json.message);
+
+    // 檢查截止時間
+    await checkDeadline(json.deadline);
 
     STUDENTS = json.students;
     const classes = Object.keys(STUDENTS).sort();
