@@ -37,19 +37,19 @@
       padding: 28px 20px 22px;
     }
     .site-header .school-name {
-      font-size: 13px;
+      font-size: 16px;
       letter-spacing: 3px;
       color: var(--green-light);
       margin-bottom: 6px;
     }
     .site-header h1 {
-      font-size: clamp(18px, 4vw, 26px);
+      font-size: clamp(22px, 5vw, 32px);
       font-weight: 700;
       line-height: 1.4;
     }
     .site-header .deadline {
       margin-top: 10px;
-      font-size: 12px;
+      font-size: 15px;
       background: var(--gold);
       display: inline-block;
       padding: 4px 14px;
@@ -87,7 +87,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 13px; font-weight: 700; flex-shrink: 0;
     }
-    .step-title { font-size: 15px; font-weight: 600; }
+    .step-title { font-size: 18px; font-weight: 600; }
     .step-body { padding: 20px 22px; }
 
     /* ── Notice box ── */
@@ -96,8 +96,8 @@
       border-left: 4px solid var(--gold);
       border-radius: 0 10px 10px 0;
       padding: 14px 16px;
-      font-size: 14px;
-      line-height: 1.9;
+      font-size: 16px;
+      line-height: 2.0;
       color: #4a3a10;
       margin-bottom: 0;
     }
@@ -121,7 +121,7 @@
       border-radius: 10px;
       padding: 14px 6px;
       font-family: inherit;
-      font-size: 15px;
+      font-size: 18px;
       font-weight: 700;
       cursor: pointer;
       transition: background 0.15s, transform 0.1s;
@@ -149,8 +149,8 @@
       text-align: center;
       transition: all 0.15s;
     }
-    .stu-btn .seat { font-size: 11px; color: var(--text-muted); }
-    .stu-btn .name { font-size: 14px; font-weight: 700; margin-top: 3px; color: var(--text-main); }
+    .stu-btn .seat { font-size: 14px; color: var(--text-muted); }
+    .stu-btn .name { font-size: 17px; font-weight: 700; margin-top: 3px; color: var(--text-main); }
     .stu-btn:hover  { border-color: var(--green-mid); background: var(--white); }
     .stu-btn.active { border-color: var(--gold); background: #fff8ec; }
     .stu-btn.active .name { color: #7a5010; }
@@ -188,10 +188,10 @@
       display: none;
     }
     .option-label.checked .radio-dot::after { display: block; }
-    .option-text { font-size: 14px; line-height: 1.8; }
-    .option-text .opt-title { font-weight: 700; font-size: 15px; color: var(--green-dark); }
-    .option-text .opt-price { color: var(--gold); font-weight: 700; font-size: 16px; }
-    .option-text .opt-detail { color: var(--text-muted); margin-top: 3px; font-size: 13px; }
+    .option-text { font-size: 16px; line-height: 1.9; }
+    .option-text .opt-title { font-weight: 700; font-size: 18px; color: var(--green-dark); }
+    .option-text .opt-price { color: var(--gold); font-weight: 700; font-size: 19px; }
+    .option-text .opt-detail { color: var(--text-muted); margin-top: 3px; font-size: 15px; }
 
     .other-input {
       width: 100%;
@@ -200,7 +200,7 @@
       border: 2px solid var(--border);
       border-radius: 8px;
       font-family: inherit;
-      font-size: 14px;
+      font-size: 16px;
       color: var(--text-main);
       resize: vertical;
       min-height: 72px;
@@ -218,7 +218,7 @@
       border-radius: 30px;
       padding: 15px 52px;
       font-family: inherit;
-      font-size: 16px;
+      font-size: 19px;
       font-weight: 700;
       cursor: pointer;
       letter-spacing: 2px;
@@ -247,11 +247,11 @@
       box-shadow: 0 12px 48px rgba(0,0,0,0.2);
     }
     .modal .icon { font-size: 52px; margin-bottom: 14px; }
-    .modal h2 { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: var(--green-dark); }
-    .modal p  { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+    .modal h2 { font-size: 26px; font-weight: 700; margin-bottom: 10px; color: var(--green-dark); }
+    .modal p  { font-size: 16px; color: var(--text-muted); line-height: 1.8; }
 
     /* ── Error hints ── */
-    .err { color: #c0392b; font-size: 13px; margin-top: 6px; display: none; }
+    .err { color: #c0392b; font-size: 15px; margin-top: 8px; display: none; }
 
     /* ── Footer ── */
     .site-footer {
@@ -311,7 +311,7 @@
   </div>
 
   <!-- Step 3: 選方案 -->
-  <div class="step-card">
+  <div class="step-card" id="plan-section" style="display:none">
     <div class="step-head">
       <div class="step-num">3</div>
       <div class="step-title">請問您希望 115 學年度午餐方案（擇一）</div>
@@ -350,7 +350,7 @@
   </div>
 
   <!-- Submit -->
-  <div class="submit-area">
+  <div class="submit-area" id="submit-area" style="display:none">
     <button class="submit-btn" id="submitBtn" onclick="submitForm()">確認送出問卷</button>
   </div>
 
@@ -444,6 +444,13 @@ function selectStudent(s, btn) {
   document.querySelectorAll('.stu-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('err-student').style.display = 'none';
+
+  // 選完學生後才顯示方案與送出按鈕
+  const planSection   = document.getElementById('plan-section');
+  const submitSection = document.getElementById('submit-area');
+  planSection.style.display   = 'block';
+  submitSection.style.display = 'block';
+  setTimeout(() => planSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
 
 // ── Option labels ──
