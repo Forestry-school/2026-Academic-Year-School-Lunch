@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>115學年度午餐意願調查</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+    :root {
+      --green-dark:  #3a5a40;
+      --green-mid:   #4a7c59;
+      --green-light: #c8dfc8;
+      --green-pale:  #f0f6f0;
+      --gold:        #b5884a;
+      --text-main:   #1e2d1e;
+      --text-muted:  #5a7060;
+      --white:       #ffffff;
+      --border:      #cddece;
+      --shadow:      0 4px 20px rgba(58,90,64,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--green-pale);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: var(--green-dark);
+      color: var(--white);
+      text-align: center;
+      padding: 28px 20px 22px;
+    }
+    .site-header .school-name {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--green-light);
+      margin-bottom: 6px;
+    }
+    .site-header h1 {
+      font-size: clamp(18px, 4vw, 26px);
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .site-header .deadline {
+      margin-top: 10px;
+      font-size: 12px;
+      background: var(--gold);
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Main layout ── */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
+    }
+
+    /* ── Step cards ── */
+    .step-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .step-head {
+      background: var(--green-mid);
+      color: var(--white);
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; flex-shrink: 0;
+    }
+    .step-title { font-size: 15px; font-weight: 600; }
+    .step-body { padding: 20px 22px; }
+
+    /* ── Notice box ── */
+    .notice {
+      background: #fffbe6;
+      border-left: 4px solid var(--gold);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.9;
+      color: #4a3a10;
+      margin-bottom: 0;
+    }
+    .notice p { margin-bottom: 6px; }
+    .notice p:last-child { margin-bottom: 0; }
+    .notice strong { color: #7a5010; }
+
+    /* ── Class grid ── */
+    .class-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 480px) {
+      .class-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .class-btn {
+      background: var(--green-mid);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      padding: 14px 6px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .class-btn:hover  { background: var(--green-dark); transform: translateY(-2px); }
+    .class-btn.active { background: var(--gold); color: var(--white); }
+
+    /* ── Student grid ── */
+    #student-section { display: none; }
+    .student-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 480px) {
+      .student-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .stu-btn {
+      background: var(--green-pale);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 4px 8px;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .stu-btn .seat { font-size: 11px; color: var(--text-muted); }
+    .stu-btn .name { font-size: 14px; font-weight: 700; margin-top: 3px; color: var(--text-main); }
+    .stu-btn:hover  { border-color: var(--green-mid); background: var(--white); }
+    .stu-btn.active { border-color: var(--gold); background: #fff8ec; }
+    .stu-btn.active .name { color: #7a5010; }
+
+    /* ── Options ── */
+    .option-list { display: flex; flex-direction: column; gap: 12px; }
+    .option-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: var(--green-pale);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .option-label:hover   { border-color: var(--green-mid); background: var(--white); }
+    .option-label input[type="radio"] { display: none; }
+    .option-label.checked { border-color: var(--green-dark); background: #e8f3e8; }
+    .radio-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--green-mid);
+      flex-shrink: 0; margin-top: 2px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .option-label.checked .radio-dot {
+      background: var(--green-dark);
+      border-color: var(--green-dark);
+    }
+    .radio-dot::after {
+      content: ''; width: 8px; height: 8px;
+      border-radius: 50%; background: white;
+      display: none;
+    }
+    .option-label.checked .radio-dot::after { display: block; }
+    .option-text { font-size: 14px; line-height: 1.8; }
+    .option-text .opt-title { font-weight: 700; font-size: 15px; color: var(--green-dark); }
+    .option-text .opt-price { color: var(--gold); font-weight: 700; font-size: 16px; }
+    .option-text .opt-detail { color: var(--text-muted); margin-top: 3px; font-size: 13px; }
+
+    .other-input {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-main);
+      resize: vertical;
+      min-height: 72px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .other-input:focus { border-color: var(--green-mid); }
+
+    /* ── Submit ── */
+    .submit-area { text-align: center; margin-top: 8px; }
+    .submit-btn {
+      background: var(--green-dark);
+      color: var(--white);
+      border: none;
+      border-radius: 30px;
+      padding: 15px 52px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 2px;
+      box-shadow: 0 4px 16px rgba(58,90,64,0.3);
+      transition: background 0.15s, transform 0.1s;
+    }
+    .submit-btn:hover   { background: var(--green-mid); transform: translateY(-2px); }
+    .submit-btn:active  { transform: translateY(0); }
+    .submit-btn:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+
+    /* ── Toast / overlay ── */
+    #overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      align-items: center; justify-content: center;
+    }
+    #overlay.show { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 380px; width: 90%;
+      text-align: center;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+    }
+    .modal .icon { font-size: 52px; margin-bottom: 14px; }
+    .modal h2 { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: var(--green-dark); }
+    .modal p  { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+    /* ── Error hints ── */
+    .err { color: #c0392b; font-size: 13px; margin-top: 6px; display: none; }
+
+    /* ── Footer ── */
+    .site-footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="school-name">新北市國民中小學</div>
+  <h1>🍱 115學年度午餐意願調查</h1>
+  <div class="deadline">⏰ 請於 6月12日 中午12時前填妥</div>
+</header>
+
+<main class="container">
+
+  <!-- 公告說明 -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num">📋</div>
+      <div class="step-title">親愛的家長您好</div>
+    </div>
+    <div class="step-body">
+      <div class="notice">
+        <p>本校目前的午餐計費標準是<strong>每人每餐80元</strong>，包含主食、4菜1湯、每月8次塊狀肉品、每周供應2次水果。</p>
+        <p>因應新北市政府推動國民中小學午餐補助政策，規劃於<strong>115學年度（115.08.01 開始）</strong>調整午餐內容及費用，為瞭解家長的想法，以做為後續招標考量，請家長勾選意願後，於 <strong>6月12日中午12時前</strong>填妥問卷，學校將依照多數家長的意願進行後續招標程序，謝謝配合。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: 選班級 -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div class="step-title">請選擇班級</div>
+    </div>
+    <div class="step-body">
+      <div class="class-grid" id="classGrid"></div>
+      <div class="err" id="err-class">請先選擇班級</div>
+    </div>
+  </div>
+
+  <!-- Step 2: 選學生 -->
+  <div class="step-card" id="student-section">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div class="step-title">請選擇座號與姓名</div>
+    </div>
+    <div class="step-body">
+      <div class="student-grid" id="studentGrid"></div>
+      <div class="err" id="err-student">請選擇您的孩子</div>
+    </div>
+  </div>
+
+  <!-- Step 3: 選方案 -->
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div class="step-title">請問您希望 115 學年度午餐方案（擇一）</div>
+    </div>
+    <div class="step-body">
+      <div class="option-list">
+        <label class="option-label" id="lbl-A">
+          <input type="radio" name="plan" value="A" />
+          <div class="radio-dot"></div>
+          <div class="option-text">
+            <div class="opt-title">方案 A｜維持現行</div>
+            <div class="opt-price">扣除補助後每餐繳費 20 元</div>
+            <div class="opt-detail">主食、4菜1湯、每月8次塊狀肉品、每周2次水果</div>
+          </div>
+        </label>
+        <label class="option-label" id="lbl-B">
+          <input type="radio" name="plan" value="B" />
+          <div class="radio-dot"></div>
+          <div class="option-text">
+            <div class="opt-title">方案 B｜調整升級</div>
+            <div class="opt-price">扣除補助後每餐繳費 50 元</div>
+            <div class="opt-detail">主食、4菜1湯、每週2次雙主菜、每月10次塊狀肉品、每周2次水果</div>
+          </div>
+        </label>
+        <label class="option-label" id="lbl-C">
+          <input type="radio" name="plan" value="C" />
+          <div class="radio-dot"></div>
+          <div class="option-text">
+            <div class="opt-title">其他可行方案</div>
+            <textarea class="other-input" id="otherText" placeholder="請說明您的其他建議…"></textarea>
+          </div>
+        </label>
+      </div>
+      <div class="err" id="err-plan">請選擇一個方案</div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-area">
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()">確認送出問卷</button>
+  </div>
+
+</main>
+
+<footer class="site-footer">製作人：TATA｜資料將存入 Google Sheets</footer>
+
+<!-- Success overlay -->
+<div id="overlay">
+  <div class="modal">
+    <div class="icon" id="modalIcon">✅</div>
+    <h2 id="modalTitle">感謝您的填寫！</h2>
+    <p id="successMsg">您的意見已成功送出，學校將依多數家長意願進行後續招標程序。</p>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  ⚠️  請將下方網址替換為您的 Apps Script 部署網址
+// ══════════════════════════════════════════
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
+// ── State ──
+let STUDENTS       = {};   // 從 Google Sheets 動態載入
+let selectedClass   = null;
+let selectedStudent = null;
+let selectedPlan    = null;
+
+// ── 載入學生名單 ──
+async function loadStudents() {
+  const classGrid = document.getElementById('classGrid');
+  classGrid.innerHTML = '<p style="color:var(--text-muted);font-size:14px;grid-column:1/-1">⏳ 載入班級中…</p>';
+
+  try {
+    const res  = await fetch(APPS_SCRIPT_URL);
+    const json = await res.json();
+
+    if (json.status !== 'ok') throw new Error(json.message);
+
+    STUDENTS = json.students;
+    const classes = Object.keys(STUDENTS).sort();
+
+    classGrid.innerHTML = '';
+    classes.forEach(cls => {
+      const btn = document.createElement('button');
+      btn.className   = 'class-btn';
+      btn.textContent = cls;
+      btn.onclick     = () => selectClass(cls);
+      classGrid.appendChild(btn);
+    });
+
+  } catch (err) {
+    classGrid.innerHTML = `<p style="color:#c0392b;font-size:13px;grid-column:1/-1">
+      ❌ 無法載入班級資料，請確認 Apps Script 網址是否正確。<br>
+      <small>${err.message}</small></p>`;
+  }
+}
+loadStudents();
+
+function selectClass(cls) {
+  selectedClass   = cls;
+  selectedStudent = null;
+  document.querySelectorAll('.class-btn').forEach(b => b.classList.toggle('active', b.textContent === cls));
+  document.getElementById('err-class').style.display = 'none';
+  renderStudents(cls);
+}
+
+function renderStudents(cls) {
+  const section  = document.getElementById('student-section');
+  const grid     = document.getElementById('studentGrid');
+  const students = STUDENTS[cls] || [];
+  grid.innerHTML  = '';
+
+  if (students.length === 0) {
+    grid.innerHTML = '<p style="color:var(--text-muted);font-size:14px;grid-column:1/-1">此班級尚無學生資料。</p>';
+  } else {
+    students.forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = 'stu-btn';
+      btn.innerHTML = `<div class="seat">${s.seat}號</div><div class="name">${s.name}</div>`;
+      btn.onclick   = () => selectStudent(s, btn);
+      grid.appendChild(btn);
+    });
+  }
+  section.style.display = 'block';
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selectStudent(s, btn) {
+  selectedStudent = s;
+  document.querySelectorAll('.stu-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('err-student').style.display = 'none';
+}
+
+// ── Option labels ──
+document.querySelectorAll('.option-label').forEach(lbl => {
+  lbl.addEventListener('click', () => {
+    document.querySelectorAll('.option-label').forEach(l => l.classList.remove('checked'));
+    lbl.classList.add('checked');
+    const radio = lbl.querySelector('input[type="radio"]');
+    radio.checked = true;
+    selectedPlan = radio.value;
+    document.getElementById('err-plan').style.display = 'none';
+  });
+});
+
+// ── Submit ──
+async function submitForm() {
+  let ok = true;
+
+  if (!selectedClass) {
+    document.getElementById('err-class').style.display = 'block';
+    ok = false;
+  }
+  if (!selectedStudent) {
+    document.getElementById('err-student').style.display = 'block';
+    ok = false;
+  }
+  if (!selectedPlan) {
+    document.getElementById('err-plan').style.display = 'block';
+    ok = false;
+  }
+  if (selectedPlan === 'C' && !document.getElementById('otherText').value.trim()) {
+    document.getElementById('err-plan').textContent = '請填寫其他可行方案內容';
+    document.getElementById('err-plan').style.display = 'block';
+    ok = false;
+  }
+  if (!ok) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '送出中…';
+
+  const otherText = selectedPlan === 'C' ? document.getElementById('otherText').value.trim() : '';
+  const planLabel = {
+    A: '方案A：維持現行（20元）',
+    B: '方案B：調整升級（50元）',
+    C: `其他：${otherText}`
+  }[selectedPlan];
+
+  const payload = {
+    timestamp: new Date().toLocaleString('zh-TW', {timeZone:'Asia/Taipei'}),
+    class:     selectedClass,
+    seat:      selectedStudent.seat,
+    name:      selectedStudent.name,
+    plan:      planLabel,
+    other:     otherText
+  };
+
+  try {
+    // 因 no-cors 模式無法讀取回應內容，改用 cors 嘗試讀取；
+    // 若 CORS 失敗（舊部署）仍 fallback 顯示成功
+    let isUpdate = false;
+    try {
+      const res  = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      isUpdate = json.status === 'updated';
+    } catch (_) {
+      // CORS 不允許時 fallback：直接 no-cors 送出
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode:   'no-cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+    }
+
+    const who = `${selectedClass}班 ${selectedStudent.seat}號 ${selectedStudent.name}`;
+    document.getElementById('modalIcon').textContent  = isUpdate ? '🔄' : '✅';
+    document.getElementById('modalTitle').textContent = isUpdate ? '意願已更新！' : '感謝您的填寫！';
+    document.getElementById('successMsg').textContent = isUpdate
+      ? `${who} 的意願已成功更新，若截止前需再次修改，請重新填寫問卷即可。`
+      : `${who} 的意願已成功送出，學校將依多數家長意願進行後續招標程序。`;
+    document.getElementById('overlay').classList.add('show');
+  } catch (e) {
+    alert('送出失敗，請稍後再試或聯絡學校。');
+    btn.disabled = false;
+    btn.textContent = '確認送出問卷';
+  }
+}
+</script>
+</body>
+</html>
